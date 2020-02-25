@@ -34,9 +34,10 @@
   $: input.setMask(mask);
   $: input.setMaskString(maskString);
   $: input.setMaskChar(maskChar);
-  $: value !== undefined && input.setValue(value);
+  $: value != null && input.setValue(value);
 
   onMount(() => {
+    applyValue(input.getState());
     input.subscribe(applyValue);
   });
 
@@ -165,6 +166,12 @@
 
   function handleFocus(e) {
     canSetSelection = true;
+    const state = input.getState();
+    if (state.visibleValue.length < state.maskedValue.length) {
+      const start = state.visibleValue.length;
+      const end = start;
+      setSelection({ start, end });
+    }
     dispatch('focus', e);
   }
 
